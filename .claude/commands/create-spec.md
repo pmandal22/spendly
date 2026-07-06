@@ -38,7 +38,7 @@ to clarify before proceeding.
 ## Step 3 — Check branch name is not taken
 Run `git branch` to list existing branches.
 If `branch_name` is already taken, append a number:
-`feature/registration-01`, `feature/registration-02` etc.
+`feature/registration-01`, `feature/registration-02` etc.Re
 
 ## Step 4 — Switch to main and pull latest
 Run:
