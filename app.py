@@ -55,7 +55,7 @@ def register():
         )
 
     session["user_id"] = user_id
-    return redirect(url_for("profile"))
+    return redirect(url_for("landing"))
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -81,7 +81,7 @@ def login():
         )
 
     session["user_id"] = user["id"]
-    return redirect(url_for("profile"))
+    return redirect(url_for("landing"))
 
 
 @app.route("/terms")
