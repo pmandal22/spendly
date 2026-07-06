@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Profile — Spendly{% endblock %}
+
+{% block content %}
+
+<section class="legal-page">
+    <h1 class="legal-title">Your profile</h1>
+    <p class="legal-updated">Member since {{ user["created_at"][:10] }}</p>
+
+    <div class="legal-section">
+        <h2>Name</h2>
+        <p>{{ user["name"] }}</p>
+    </div>
+
+    <div class="legal-section">
+        <h2>Email</h2>
+        <p>{{ user["email"] }}</p>
+    </div>
+
+    <p><a href="{{ url_for('logout') }}">Log out</a></p>
+</section>
+
+{% endblock %}
