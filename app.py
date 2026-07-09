@@ -14,6 +14,14 @@ with app.app_context():
     seed_db()
 
 
+@app.context_processor
+def inject_current_user():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return {"current_user": None}
+    return {"current_user": get_user_by_id(user_id)}
+
+
 # ------------------------------------------------------------------ #
 # Routes                                                              #
 # ------------------------------------------------------------------ #
