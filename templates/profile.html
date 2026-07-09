@@ -10,28 +10,35 @@
         <div class="profile-avatar">{{ user["name"][0]|upper }}</div>
         <div class="profile-header-text">
             <h1 class="profile-title">{{ user["name"] }}</h1>
-            <p class="profile-updated">{{ user["email"] }} · Member since {{ user["created_at"][:10] }}</p>
+            <p class="profile-updated">
+                <i data-lucide="mail"></i>{{ user["email"] }}
+                <span class="profile-meta-sep">·</span>
+                <i data-lucide="calendar"></i>Member since {{ user["created_at"][:10] }}
+            </p>
         </div>
         <a href="{{ url_for('logout') }}" class="btn-ghost">Log out</a>
     </div>
 
     <div class="profile-stats-row">
         <div class="profile-stat-card">
+            <div class="stat-icon"><i data-lucide="wallet"></i></div>
             <p class="stat-label">Total spent</p>
             <p class="stat-value">₹{{ "%.2f"|format(summary.total_spent) }}</p>
         </div>
         <div class="profile-stat-card">
+            <div class="stat-icon"><i data-lucide="receipt"></i></div>
             <p class="stat-label">Transactions</p>
             <p class="stat-value">{{ summary.transaction_count }}</p>
         </div>
         <div class="profile-stat-card">
+            <div class="stat-icon"><i data-lucide="tag"></i></div>
             <p class="stat-label">Top category</p>
             <p class="stat-value">{{ summary.top_category or "—" }}</p>
         </div>
     </div>
 
     <div class="profile-section">
-        <h2 class="profile-section-title">Recent transactions</h2>
+        <h2 class="profile-section-title"><i data-lucide="receipt"></i>Recent transactions</h2>
         {% if transactions %}
         <div class="profile-table-wrap">
             <table class="profile-table">
@@ -48,7 +55,11 @@
                     <tr>
                         <td>{{ txn["date"] }}</td>
                         <td>{{ txn["description"] or "—" }}</td>
-                        <td><span class="category-badge">{{ txn["category"] }}</span></td>
+                        <td>
+                            <span class="category-badge">
+                                <span class="category-dot bar-{{ txn['category']|lower }}"></span>{{ txn["category"] }}
+                            </span>
+                        </td>
                         <td class="profile-table-amount">₹{{ "%.2f"|format(txn["amount"]) }}</td>
                     </tr>
                     {% endfor %}
@@ -61,7 +72,7 @@
     </div>
 
     <div class="profile-section">
-        <h2 class="profile-section-title">Category breakdown</h2>
+        <h2 class="profile-section-title"><i data-lucide="pie-chart"></i>Category breakdown</h2>
         {% if categories %}
         <div class="profile-chart">
             {% for cat in categories %}
@@ -70,6 +81,7 @@
                 <div class="chart-track">
                     <div class="chart-bar bar-{{ cat.name|lower }}" style="width: {{ cat.pct }}%"></div>
                 </div>
+                <span class="chart-amount">₹{{ "%.2f"|format(cat.total) }}</span>
                 <span class="chart-pct">{{ cat.pct }}%</span>
             </div>
             {% endfor %}
