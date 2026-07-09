@@ -5,17 +5,12 @@
 {% block content %}
 
 <section class="profile-page">
-    <h1 class="profile-title">Your profile</h1>
-    <p class="profile-updated">Member since {{ user["created_at"][:10] }}</p>
 
-    <div class="profile-info-card">
-        <div class="profile-info-row">
-            <span class="profile-info-label">Name</span>
-            <span class="profile-info-value">{{ user["name"] }}</span>
-        </div>
-        <div class="profile-info-row">
-            <span class="profile-info-label">Email</span>
-            <span class="profile-info-value">{{ user["email"] }}</span>
+    <div class="profile-header">
+        <div class="profile-avatar">{{ user["name"][0]|upper }}</div>
+        <div class="profile-header-text">
+            <h1 class="profile-title">{{ user["name"] }}</h1>
+            <p class="profile-updated">{{ user["email"] }} · Member since {{ user["created_at"][:10] }}</p>
         </div>
         <a href="{{ url_for('logout') }}" class="btn-ghost">Log out</a>
     </div>
