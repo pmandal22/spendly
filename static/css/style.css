@@ -19,6 +19,12 @@
     --border: #e4e1da;
     --border-soft: #eeebe4;
 
+    --chart-food: #e6a817;
+    --chart-transport: #4a90d9;
+    --chart-bills: #8b5cf6;
+    --chart-health: #2ecc71;
+    --chart-entertainment: #e05c8a;
+
     --font-display: 'DM Serif Display', Georgia, serif;
     --font-body: 'DM Sans', system-ui, sans-serif;
 
@@ -742,14 +748,14 @@ a { color: inherit; text-decoration: none; }
     border-radius: 999px;
 }
 
-.bar-food          { background: #e6a817; }
-.bar-travel        { background: #4a90d9; }
-.bar-bills         { background: #8b5cf6; }
-.bar-transport     { background: #4a90d9; }
-.bar-health        { background: #2ecc71; }
-.bar-entertainment { background: #e05c8a; }
-.bar-shopping      { background: #c17f24; }
-.bar-other         { background: #6b6b6b; }
+.bar-food          { background: var(--chart-food); }
+.bar-travel        { background: var(--chart-transport); }
+.bar-bills         { background: var(--chart-bills); }
+.bar-transport     { background: var(--chart-transport); }
+.bar-health        { background: var(--chart-health); }
+.bar-entertainment { background: var(--chart-entertainment); }
+.bar-shopping      { background: var(--accent-2); }
+.bar-other         { background: var(--ink-muted); }
 
 /* ------------------------------------------------------------------ */
 /* Video modal                                                         */
