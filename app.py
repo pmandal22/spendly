@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.security import check_password_hash
 
-from database.db import get_db, init_db, seed_db, create_user, get_user_by_email
+from database.db import get_db, init_db, seed_db, create_user, get_user_by_email, get_user_by_id
 
 app = Flask(__name__)
 app.secret_key = "dev"  # TODO: replace with a real secret-key strategy before production
@@ -9,6 +9,14 @@ app.secret_key = "dev"  # TODO: replace with a real secret-key strategy before p
 with app.app_context():
     init_db()
     seed_db()
+
+
+@app.context_processor
+def inject_current_user():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return {}
+    return {"current_user": get_user_by_id(user_id)}
 
 
 # ------------------------------------------------------------------ #
