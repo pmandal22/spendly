@@ -2,78 +2,87 @@
 
 {% block title %}Profile — Spendly{% endblock %}
 
-{% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
-{% endblock %}
-
 {% block content %}
 
 <section class="profile-page">
+    <h1 class="profile-title">Your profile</h1>
+    <p class="profile-updated">Member since {{ user["created_at"][:10] }}</p>
 
-    <div class="profile-card">
-        <div class="profile-avatar">
-            {% for part in user["name"].split(" ")[:2] %}{{ part[0] | upper }}{% endfor %}
+    <div class="profile-info-card">
+        <div class="profile-info-row">
+            <span class="profile-info-label">Name</span>
+            <span class="profile-info-value">{{ user["name"] }}</span>
         </div>
-        <div>
-            <h1 class="profile-name">{{ user["name"] }}</h1>
-            <p class="profile-email">{{ user["email"] }}</p>
-            <p class="profile-since">Member since {{ user["member_since"] }}</p>
+        <div class="profile-info-row">
+            <span class="profile-info-label">Email</span>
+            <span class="profile-info-value">{{ user["email"] }}</span>
         </div>
+        <a href="{{ url_for('logout') }}" class="btn-ghost">Log out</a>
     </div>
 
-    <div class="profile-stats">
-        <div class="profile-stat">
-            <p class="profile-stat-label">Total spent</p>
-            <p class="profile-stat-value">${{ "%.2f" | format(stats["total_spent"]) }}</p>
+    <div class="profile-stats-row">
+        <div class="profile-stat-card">
+            <p class="stat-label">Total spent</p>
+            <p class="stat-value">₹{{ "%.2f"|format(summary.total_spent) }}</p>
         </div>
-        <div class="profile-stat">
-            <p class="profile-stat-label">Transactions</p>
-            <p class="profile-stat-value">{{ stats["transaction_count"] }}</p>
+        <div class="profile-stat-card">
+            <p class="stat-label">Transactions</p>
+            <p class="stat-value">{{ summary.transaction_count }}</p>
         </div>
-        <div class="profile-stat">
-            <p class="profile-stat-label">Top category</p>
-            <p class="profile-stat-value">{{ stats["top_category"] }}</p>
+        <div class="profile-stat-card">
+            <p class="stat-label">Top category</p>
+            <p class="stat-value">{{ summary.top_category or "—" }}</p>
         </div>
-    </div>
-
-    <div class="profile-section">
-        <h2>Recent transactions</h2>
-        <table class="profile-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Description</th>
-                    <th>Category</th>
-                    <th>Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for t in transactions %}
-                <tr>
-                    <td>{{ t["date"] }}</td>
-                    <td>{{ t["description"] }}</td>
-                    <td><span class="badge badge-{{ t['category'] | lower }}">{{ t["category"] }}</span></td>
-                    <td>${{ "%.2f" | format(t["amount"]) }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
     </div>
 
     <div class="profile-section">
-        <h2>Category breakdown</h2>
-        {% for c in categories %}
-        <div class="profile-breakdown-row">
-            <span class="profile-breakdown-label">{{ c["name"] }}</span>
-            <div class="profile-breakdown-track">
-                <div class="profile-breakdown-bar badge-{{ c['name'] | lower }} pct-{{ c['pct'] }}"></div>
+        <h2 class="profile-section-title">Recent transactions</h2>
+        {% if transactions %}
+        <div class="profile-table-wrap">
+            <table class="profile-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th class="profile-table-amount">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for txn in transactions %}
+                    <tr>
+                        <td>{{ txn["date"] }}</td>
+                        <td>{{ txn["description"] or "—" }}</td>
+                        <td><span class="category-badge">{{ txn["category"] }}</span></td>
+                        <td class="profile-table-amount">₹{{ "%.2f"|format(txn["amount"]) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="profile-empty">No expenses yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="profile-section">
+        <h2 class="profile-section-title">Category breakdown</h2>
+        {% if categories %}
+        <div class="profile-chart">
+            {% for cat in categories %}
+            <div class="chart-row">
+                <span class="chart-label">{{ cat.name }}</span>
+                <div class="chart-track">
+                    <div class="chart-bar bar-{{ cat.name|lower }}" style="width: {{ cat.pct }}%"></div>
+                </div>
+                <span class="chart-pct">{{ cat.pct }}%</span>
             </div>
-            <span class="profile-breakdown-total">${{ "%.2f" | format(c["total"]) }}</span>
+            {% endfor %}
         </div>
-        {% endfor %}
+        {% else %}
+        <p class="profile-empty">No expenses yet.</p>
+        {% endif %}
     </div>
-
-    <p><a href="{{ url_for('logout') }}">Log out</a></p>
 
 </section>
 

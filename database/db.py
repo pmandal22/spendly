@@ -110,3 +110,58 @@ def create_user(name, email, password):
         return None
     finally:
         conn.close()
+
+
+def get_expenses_by_user(user_id, limit=10):
+    conn = get_db()
+    expenses = conn.execute(
+        "SELECT * FROM expenses WHERE user_id = ? "
+        "ORDER BY date DESC, id DESC LIMIT ?",
+        (user_id, limit),
+    ).fetchall()
+    conn.close()
+    return expenses
+
+
+def get_expense_summary(user_id):
+    conn = get_db()
+    totals = conn.execute(
+        "SELECT COALESCE(SUM(amount), 0) AS total_spent, "
+        "COUNT(*) AS transaction_count "
+        "FROM expenses WHERE user_id = ?",
+        (user_id,),
+    ).fetchone()
+    top = conn.execute(
+        "SELECT category, SUM(amount) AS total FROM expenses "
+        "WHERE user_id = ? GROUP BY category ORDER BY total DESC LIMIT 1",
+        (user_id,),
+    ).fetchone()
+    conn.close()
+    return {
+        "total_spent": totals["total_spent"],
+        "transaction_count": totals["transaction_count"],
+        "top_category": top["category"] if top else None,
+    }
+
+
+def get_category_breakdown(user_id):
+    conn = get_db()
+    rows = conn.execute(
+        "SELECT category, SUM(amount) AS total FROM expenses "
+        "WHERE user_id = ? GROUP BY category ORDER BY total DESC",
+        (user_id,),
+    ).fetchall()
+    conn.close()
+
+    grand_total = sum(row["total"] for row in rows)
+    if grand_total == 0:
+        return []
+
+    return [
+        {
+            "name": row["category"],
+            "total": row["total"],
+            "pct": round(row["total"] / grand_total * 100),
+        }
+        for row in rows
+    ]
