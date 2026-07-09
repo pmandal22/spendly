@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.security import check_password_hash
 
-from database.db import get_db, init_db, seed_db, create_user, get_user_by_email, get_user_by_id
+from database.db import get_db, init_db, seed_db, create_user, get_user_by_email
 
 app = Flask(__name__)
 app.secret_key = "dev"  # TODO: replace with a real secret-key strategy before production
@@ -106,16 +106,35 @@ def logout():
 
 @app.route("/profile")
 def profile():
-    user_id = session.get("user_id")
-    if user_id is None:
+    if session.get("user_id") is None:
         return redirect(url_for("login"))
 
-    user = get_user_by_id(user_id)
-    if user is None:
-        session.pop("user_id", None)
-        return redirect(url_for("login"))
-
-    return render_template("profile.html", user=user)
+    user = {
+        "name": "Demo User",
+        "email": "demo@spendly.com",
+        "member_since": "2026-01-15",
+    }
+    stats = {
+        "total_spent": 386.25,
+        "transaction_count": 8,
+        "top_category": "Food",
+    }
+    transactions = [
+        {"date": "2026-07-02", "description": "Groceries", "category": "Food", "amount": 42.50},
+        {"date": "2026-07-03", "description": "Bus pass", "category": "Transport", "amount": 15.00},
+        {"date": "2026-07-05", "description": "Electricity bill", "category": "Bills", "amount": 120.00},
+        {"date": "2026-07-08", "description": "Pharmacy", "category": "Health", "amount": 60.00},
+    ]
+    categories = [
+        {"name": "Food", "total": 76.25, "pct": 20},
+        {"name": "Bills", "total": 120.00, "pct": 31},
+        {"name": "Transport", "total": 15.00, "pct": 4},
+        {"name": "Health", "total": 60.00, "pct": 16},
+    ]
+    return render_template(
+        "profile.html", user=user, stats=stats,
+        transactions=transactions, categories=categories,
+    )
 
 
 @app.route("/expenses/add")
